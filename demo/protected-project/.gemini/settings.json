@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "BeforeTool": [
+      {
+        "matcher": "shell|run_shell_command|write_file|delete_file|edit",
+        "hooks": [
+          {
+            "name": "provenance-armor",
+            "type": "command",
+            "command": "python3 PROVENANCE_ARMOR_ROOT/hooks/provenance_armor_hook.py",
+            "timeout": 10000
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -7,74 +7,44 @@ Provenance Armor hardens AI agent workflows against Indirect Prompt Injection (I
 ## Architecture
 
 ```mermaid
-block-beta
-  columns 5
-
-  block:input:1
-    columns 1
-    U["User Instruction"]
-    H["Conversation History"]
-    S["Untrusted Data\n(files, web, MCP)"]
+graph LR
+  subgraph " "
+    U([User Instruction])
+    S([Untrusted Data])
   end
 
-  space
-
-  block:engine:2
-    columns 1
-
-    block:phase1:2
-      columns 2
-      D["Context\nDecomposer"]
-      LOO["LOO Scorer\n3-pass"]
-      CA["Causal\nAnalyzer"]
-      SAN["Sanitize &\nRetry"]
-    end
-
-    block:phase2:2
-      columns 2
-      PE["Policy\nEngine"]
-      RE["Redaction\nEngine"]
-      MCP["MCP\nGateway"]
-      IC["Intent\nClassifier"]
-    end
+  subgraph "Phase 1: Causal Interceptor"
+    LOO["LOO Scorer"]
+    CA{"Causal\nAnalyzer"}
+    SAN["Sanitize & Retry"]
   end
 
-  space
-
-  block:output:1
-    columns 1
-    UI["Provenance UI"]
-    AL["Audit Logger"]
-    DEC{{"ALLOW\nor\nBLOCK"}}
+  subgraph "Phase 3: Redaction Engine"
+    R["Regex + NER + Delta Mask"]
   end
 
-  U --> D
-  H --> D
-  S --> D
-  D --> LOO
+  subgraph "Phase 2: Provenance UI"
+    UI["Causal Meter\nBlast Radius\nSource Highlight"]
+  end
+
+  U --> LOO
+  S --> LOO
   LOO --> CA
-  CA --> SAN
-  PE --> CA
-  RE --> UI
-  MCP --> D
-  CA --> UI
-  CA --> DEC
-  CA --> AL
+  CA -->|dominated| SAN -->|cleaned| LOO
+  CA -->|safe| R
+  R --> UI
+  CA -->|safe| ALLOW(( ALLOW ))
+  CA -->|dominated| BLOCK(( BLOCK ))
 
-  style U fill:#4CAF50,color:#fff
-  style H fill:#2196F3,color:#fff
-  style S fill:#FF5722,color:#fff
-  style D fill:#7E57C2,color:#fff
-  style LOO fill:#7E57C2,color:#fff
-  style CA fill:#7E57C2,color:#fff
-  style SAN fill:#7E57C2,color:#fff
-  style PE fill:#FF9800,color:#fff
-  style RE fill:#FF9800,color:#fff
-  style MCP fill:#FF9800,color:#fff
-  style IC fill:#FF9800,color:#fff
-  style UI fill:#00BCD4,color:#fff
-  style AL fill:#00BCD4,color:#fff
-  style DEC fill:#E91E63,color:#fff
+  style U fill:#4CAF50,color:#fff,stroke:#388E3C
+  style S fill:#FF5722,color:#fff,stroke:#D84315
+  style LOO fill:#7E57C2,color:#fff,stroke:#5E35B1
+  style CA fill:#7E57C2,color:#fff,stroke:#5E35B1
+  style SAN fill:#7E57C2,color:#fff,stroke:#5E35B1
+  style R fill:#FF9800,color:#fff,stroke:#EF6C00
+  style UI fill:#00BCD4,color:#fff,stroke:#00838F
+  style ALLOW fill:#4CAF50,color:#fff,stroke:#388E3C
+  style BLOCK fill:#E91E63,color:#fff,stroke:#AD1457
 ```
 
 ## Three Pillars

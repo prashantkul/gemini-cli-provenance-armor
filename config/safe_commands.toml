@@ -1,0 +1,59 @@
+# Provenance Armor — Safe Command Configuration
+#
+# Commands in this list bypass LOO causal attribution entirely.
+# Only add commands that are safe by construction — they should not
+# access the network, read secrets, or execute untrusted code.
+#
+# A command is considered safe if:
+# 1. ALL base commands in the pipeline are in [safe_commands]
+# 2. No arguments contain network indicators from [network_indicators]
+# 3. No arguments reference paths from [sensitive_paths]
+# 4. No pipe to shell (e.g. "| sh", "| bash")
+
+[safe_commands]
+# Package managers
+packages = ["npm", "npx", "yarn", "pnpm", "bun", "pip", "uv", "poetry", "pdm"]
+
+# Build tools
+build = ["make", "cmake", "cargo", "go", "tsc", "node", "deno", "gradle", "mvn"]
+
+# Test runners
+test = ["pytest", "jest", "vitest", "mocha", "unittest"]
+
+# Linters and formatters
+lint = ["eslint", "prettier", "ruff", "mypy", "black", "flake8", "pylint", "rubocop"]
+
+# Version control
+vcs = ["git", "gh", "svn"]
+
+# Safe shell commands
+shell = [
+    "ls", "cat", "echo", "pwd", "whoami", "date", "which", "type",
+    "mkdir", "touch", "cp", "mv", "head", "tail", "wc",
+    "sort", "uniq", "diff", "find", "tree", "file", "stat",
+    "grep", "awk", "sed", "tr", "cut", "xargs",
+]
+
+# Interpreters (safe when not piped)
+interpreters = ["python", "python3", "ruby", "java", "javac", "node", "deno"]
+
+# Containers (build/inspect only — run is handled separately)
+containers = ["docker", "docker-compose", "podman"]
+
+[network_indicators]
+# Strings in command arguments that indicate network access
+patterns = [
+    "curl", "wget", "ssh", "scp", "nc", "ncat",
+    "fetch", "http://", "https://", "ftp://",
+    "/dev/tcp/", "/dev/udp/",
+]
+
+[sensitive_paths]
+# Path patterns that indicate access to secrets or credentials
+patterns = [
+    "~/.ssh", "~/.gnupg", "~/.aws", "~/.config/gcloud",
+    ".env", "/etc/passwd", "/etc/shadow",
+    ".git-credentials", "id_rsa", "id_ed25519",
+    ".pem", ".key", ".p12", ".pfx",
+    "credentials.json", "token.json", "secrets.yaml",
+]

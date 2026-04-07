@@ -22,6 +22,11 @@ all = ["provenance-armor[ner,intent,llm,dev]"]
 [project.scripts]
 provenance-armor = "provenance_armor.cli:main"
 
+[[tool.uv.index]]
+url = "https://pypi.org/simple/"
+name = "pypi"
+default = true
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

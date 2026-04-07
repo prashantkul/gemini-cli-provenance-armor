@@ -16,7 +16,7 @@ from pathlib import Path
 
 from rich.console import Console
 
-console = Console(highlight=False)
+console = Console()
 
 
 def main(argv: list[str] | None = None) -> int:

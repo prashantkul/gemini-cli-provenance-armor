@@ -26,7 +26,7 @@ class ProvenanceRenderer:
     """
 
     def __init__(self, console: Optional[Console] = None) -> None:
-        self._console = console or Console()
+        self._console = console or Console(force_terminal=True)
 
     def render(
         self,

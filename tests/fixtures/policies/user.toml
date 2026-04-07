@@ -1,0 +1,8 @@
+[[policy]]
+tool = "run_shell_command"
+allow = true
+
+[policy.causal_armor]
+enabled = true
+margin_tau = 0.6
+on_violation = "ask_user"

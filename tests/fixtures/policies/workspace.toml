@@ -1,0 +1,14 @@
+[[policy]]
+tool = "run_shell_command"
+allow = true
+
+[[policy]]
+tool = "read_file"
+allow = true
+
+[[policy]]
+tool = "write_file"
+allow = true
+
+[policy.causal_armor]
+enabled = false

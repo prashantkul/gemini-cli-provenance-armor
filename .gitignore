@@ -8,3 +8,10 @@ wheels/
 
 # Virtual environments
 .venv/
+
+# Node (created by Gemini CLI during live tests)
+node_modules/
+package-lock.json
+
+# Demo artifacts
+demo/*/verify-env.sh

@@ -31,5 +31,8 @@ This directory contains detailed research papers covering various security aspec
 12. **[11_plan_mode_adversarial.md](./11_plan_mode_adversarial.md)**
     *   **Summary:** Investigating "plan poisoning" where malicious steps are hidden in long-running multi-step plans, and designing a plan-verification engine.
 
+13. **[12_code_assist_attack_surface.md](./12_code_assist_attack_surface.md)**
+    *   **Summary:** Comparative attack surface analysis of Gemini Code Assist (IDE extension) vs. Gemini CLI, covering workspace config injection, implicit context collection, code customization supply chain risks, PR review injection, and IDE extension ecosystem threats.
+
 ## Usage
 These documents are intended to serve as a roadmap for security improvements and as a reference for developers working on the Gemini CLI codebase.

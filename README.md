@@ -12,38 +12,43 @@ Provenance Armor hardens AI agent workflows against Indirect Prompt Injection (I
 
 ```mermaid
 graph TB
+  subgraph "Actors"
+    DEV["Developer<br/>(trusted)"]
+    ATTACKER["Attacker<br/>(untrusted)"]
+  end
+
   subgraph "Gemini CLI"
-    USER([User Prompt]) --> AGENT["Gemini Agent<br/>(gemini-3-flash)"]
-    FILES([Project Files<br/>README.md, src/]) --> AGENT
+    DEV -->|prompt| AGENT["Gemini Agent<br/>(gemini-3-flash)"]
+    ATTACKER -.->|"poisoned README,<br/>code comments,<br/>package.json"| FILES([Project Files])
+    FILES --> AGENT
     AGENT -->|tool call| HOOK
   end
 
   subgraph "Provenance Armor Plugin"
-    HOOK["BeforeTool Hook<br/>(.gemini/settings.json)"]
+    HOOK["BeforeTool Hook"]
     HOOK --> SAFE{"Safe Command<br/>Allowlist"}
-    SAFE -->|"npm test, git status"| ALLOW
+    SAFE -->|"npm test, ls, git"| ALLOW
     SAFE -->|"curl, bash, ssh..."| LOO["LOO Scorer"]
-    LOO -->|3 scoring passes| PROXY["VLLMProxyProvider"]
-    PROXY --> ANALYZE{"Causal<br/>Analyzer"}
+    LOO --> ANALYZE{"Causal<br/>Analyzer"}
     ANALYZE -->|user dominates| ALLOW
     ANALYZE -->|data dominates| BLOCK
   end
 
   subgraph "Gemma 3 (vLLM on GPU)"
-    PROXY -->|"logprobs API"| GEMMA["google/gemma-3-12b-it<br/>/v1/completions"]
-    GEMMA --> PROXY
+    LOO <-->|"logprobs<br/>(3 passes)"| GEMMA["google/gemma-3-12b-it"]
   end
 
   ALLOW(( ALLOW )) -->|execute| AGENT
-  BLOCK(( BLOCK )) -->|"deny + reason"| AGENT
+  BLOCK(( BLOCK )) -->|"IPI alert +<br/>dominant source"| DEV
+  DEV -.->|"reviews, sanitizes<br/>file, retries"| FILES
 
-  style USER fill:#4CAF50,color:#fff,stroke:#388E3C
-  style FILES fill:#FF5722,color:#fff,stroke:#D84315
+  style DEV fill:#4CAF50,color:#fff,stroke:#388E3C
+  style ATTACKER fill:#E91E63,color:#fff,stroke:#AD1457
   style AGENT fill:#2196F3,color:#fff,stroke:#1565C0
+  style FILES fill:#FF5722,color:#fff,stroke:#D84315
   style HOOK fill:#FF9800,color:#fff,stroke:#EF6C00
   style SAFE fill:#FF9800,color:#fff,stroke:#EF6C00
   style LOO fill:#7E57C2,color:#fff,stroke:#5E35B1
-  style PROXY fill:#7E57C2,color:#fff,stroke:#5E35B1
   style ANALYZE fill:#7E57C2,color:#fff,stroke:#5E35B1
   style GEMMA fill:#00897B,color:#fff,stroke:#00695C
   style ALLOW fill:#4CAF50,color:#fff,stroke:#388E3C

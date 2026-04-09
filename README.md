@@ -6,6 +6,9 @@ Provenance Armor hardens AI agent workflows against Indirect Prompt Injection (I
 
 **Tested live against Gemini CLI v0.36.0** — blocked 8 distinct IPI attack types with 100% detection rate and 0% false positives using real LOO scoring with Gemma 3 12B.
 
+## Demo
+Take a look at this Gemini CLI demo for [Gemini CLI IPI Attack detection and block](https://app.screencast.com/upS5lGc3Y1UTu?conversation=xHoNPPupaGoSdjpoknZefZ)
+
 ## Architecture
 
 ### System Overview

@@ -15,3 +15,6 @@ package-lock.json
 
 # Demo artifacts
 demo/*/verify-env.sh
+
+# Research docs (kept locally only)
+docs/
